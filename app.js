@@ -42,8 +42,9 @@ var steplevels = express.Router();
 // USERS
 steplevels.route('/users')
   .get(authorize, UsersCtrl.findAllUsers)
-  .post(UsersCtrl.addUser);
-
+  .post(UsersCtrl.addUser)
+  .put(UsersCtrl.updateUser);
+  
 steplevels.route('/login')
   .post(UsersCtrl.login);
 
