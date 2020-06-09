@@ -1,5 +1,5 @@
 {
-  "name": "node-api-rest-example",
+  "name": "greylevels-back",
   "version": "2.0.0",
   "dependencies": {
     "bcrypt": "^4.0.1",

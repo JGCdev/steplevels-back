@@ -22,7 +22,6 @@ exports.findByEmail = function(req, res) {
 };
 
 exports.addUser = function(req, res) {
-	console.log('Entra pet: ', req.body);
 	if (req.body.nombre && req.body.telefono && req.body.email && req.body.pass) {
 		bcrypt.hash(req.body.pass, 10).then((hash) => {
 			const user = new User({
@@ -107,6 +106,23 @@ exports.findAllUsers = function(req, res) {
 exports.deleteUser = function(req, res) {
 	console.log('Entra delete: ', req.params.id);
 	User.deleteOne({ _id : req.params.id }, (err, results) => {
+		if(err) res.send(500, err.message);
+		res.status(200).jsonp(results);
+	});
+};
+
+// PUT
+exports.updateUser = function(req, res) {
+	const myQuery = { _id : req.body.id };
+	const newValues = { 
+		nombre: req.body.nombre, 
+		email: req.body.email, 
+		direccion: req.body.direccion, 
+		apellidos: req.body.apellidos, 
+		empresa: req.body.empresa,
+		admin: req.body.admin
+	};
+	User.updateOne(myQuery, newValues, (err, results) => {
 		if(err) res.send(500, err.message);
 		res.status(200).jsonp(results);
 	});
