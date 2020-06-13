@@ -28,6 +28,7 @@ if (environment === 'development') {
 // Import Models and controllers
 var models    = require('./models/user')(app, mongoose);
 var UsersCtrl = require('./controllers/user');
+var ProjectsCtrl = require('./controllers/project');
 
 // Example Route
 var router = express.Router();
@@ -54,6 +55,9 @@ steplevels.route('/users/:id')
 
 steplevels.route('/users/:email')
   .get(UsersCtrl.findByEmail);
+
+steplevels.route('/projects/')
+  .post(ProjectsCtrl.addProject);
 
 app.use('/api/steplevels/', steplevels);
 
