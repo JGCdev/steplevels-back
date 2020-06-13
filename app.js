@@ -4,6 +4,12 @@ var express         = require("express"),
     cors            = require("cors"),
     mongoose        = require('mongoose'),
     authorize       = require("./middlewares/auth");
+var util = require('util')
+var path = require('path')
+var fs = require('fs')
+var multer = require('multer')({
+  dest: 'uploads'
+})
 
 const environment = process.env.NODE_ENV || 'production';
 
@@ -26,9 +32,11 @@ if (environment === 'development') {
 }
 
 // Import Models and controllers
-var models    = require('./models/user')(app, mongoose);
+var userModel    = require('./models/user')(app, mongoose);
+var projectModel    = require('./models/project')(app, mongoose);
 var UsersCtrl = require('./controllers/user');
 var ProjectsCtrl = require('./controllers/project');
+var Project = mongoose.model('Project');
 
 // Example Route
 var router = express.Router();
@@ -56,8 +64,59 @@ steplevels.route('/users/:id')
 steplevels.route('/users/:email')
   .get(UsersCtrl.findByEmail);
 
-steplevels.route('/projects/')
-  .post(ProjectsCtrl.addProject);
+steplevels.route('/projects')
+  .get(authorize, ProjectsCtrl.findAllProjects);
+
+
+router.post('/api/steplevels/projects/', [multer.single('file')], function (req, res, next) {
+  console.log('entra: ', req.file);
+    return storeWithOriginalName(req.file)
+      .then(encodeURIComponent)
+      .then(encoded => {
+          const pr = JSON.parse(req.body.datos);
+          const myProject = new Project({
+              nombre:       pr.nombre,
+              nombreDis:    pr.nombreDis,
+              packaging:    pr.packaging,
+              material:     pr.material,
+              impresor:     pr.impresor,
+              tipoarchivo:  pr.tipoArchivo,
+              preview:      pr.preview,
+              cliente:      pr.cliente,
+              artwork:      pr.artwork,
+              fecha:        pr.fecha,
+              informe:      pr.informe,
+              contacto:     pr.contacto,
+              estado:       pr.estado,
+              preview: '',
+              archivos: [
+                encoded
+              ]
+          });
+
+          myProject.save().then((response) => {
+            res.status(201).json({
+              message: "Project successfully created!",
+              result: response
+            });
+          }).catch(error => {
+            res.status(500).json({
+              code: error.code
+            });
+          });
+      })
+      .catch(next)
+  })
+  
+function storeWithOriginalName (file) {
+  var fullNewPath = path.join(file.destination, file.originalname);
+  var rename = util.promisify(fs.rename);
+
+  return rename(file.path, fullNewPath)
+    .then(() => {
+      return file.originalname
+    })
+}
 
 app.use('/api/steplevels/', steplevels);
 
