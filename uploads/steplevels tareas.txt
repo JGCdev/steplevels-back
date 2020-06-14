@@ -1,0 +1,8 @@
+panel admin
+-proyectos añadir, terminar formulario, editar, borrar
+-subir a hosting el back para poder comunicar desde app web
+
+
+web
+-spinner de carga, pulir
+-imagenes, videos, diseño general, dar una vuelta y comentarlo. Ver puntos clave que faltan

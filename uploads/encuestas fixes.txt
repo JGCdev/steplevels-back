@@ -1,0 +1,20 @@
+GENERAL
+-Añadir guard o lo que sea a encuesta-creada para que solo se pueda acceder si acabamos de crear la encuesta
+
+SERVIDOR
+1 - Añadir securización por dominio en nginx (no acceder desde otro sitio que no sea github)
+
+FRONT
+-Dar vueltas a las pelotas del svg, hacer grupo y aplicar movimientos irregulares
+
+BACK
+
+BD
+
+
+DETALLES
+-Realizar llamadas a según que datos excluyendo otros que no se necesiten - mongo exclude data from queries
+-implementación de tests?
+-Revisión general de código y parametrización, optimización
+-Documentar app completa con guía de estilos, hacer un post y explicarlo?
+
