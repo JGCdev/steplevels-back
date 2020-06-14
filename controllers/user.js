@@ -102,7 +102,6 @@ exports.findAllUsers = function(req, res) {
 	});
 };
 
-//GET 
 exports.deleteUser = function(req, res) {
 	console.log('Entra delete: ', req.params.id);
 	User.deleteOne({ _id : req.params.id }, (err, results) => {

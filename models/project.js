@@ -9,6 +9,7 @@ exports = module.exports = function(app, mongoose) {
 		tipoArchivo: { type: String },
 		fecha: { type: String },
 		cliente: { type: String },
+		clienteNombre: { type: String },
 		artwork: { type: String },
 		informe: { type: String },
 		contacto: { type: String },
