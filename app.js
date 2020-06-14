@@ -67,6 +67,12 @@ steplevels.route('/users/:email')
 steplevels.route('/projects')
   .get(authorize, ProjectsCtrl.findAllProjects);
 
+steplevels.route('/projects/file/:name')
+  .get(authorize, ProjectsCtrl.downloadProject);
+
+steplevels.route('/projects/:id')
+  .delete(authorize, ProjectsCtrl.deleteProject)
+
 
 router.post('/api/steplevels/projects/', [multer.single('file')], function (req, res, next) {
   console.log('entra: ', req.file);
@@ -83,6 +89,7 @@ router.post('/api/steplevels/projects/', [multer.single('file')], function (req,
               tipoarchivo:  pr.tipoArchivo,
               preview:      pr.preview,
               cliente:      pr.cliente,
+              clienteNombre: pr.clienteNombre,
               artwork:      pr.artwork,
               fecha:        pr.fecha,
               informe:      pr.informe,
@@ -90,7 +97,11 @@ router.post('/api/steplevels/projects/', [multer.single('file')], function (req,
               estado:       pr.estado,
               preview: '',
               archivos: [
-                encoded
+                {
+                  nombre: encoded,
+                  preview: '',
+                  fechaSubida: new Date(),
+                }
               ]
           });
 
