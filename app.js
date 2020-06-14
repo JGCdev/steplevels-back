@@ -67,8 +67,11 @@ steplevels.route('/users/:email')
 steplevels.route('/projects')
   .get(authorize, ProjectsCtrl.findAllProjects);
 
+steplevels.route('/projects/file/delete')
+  .post(authorize, ProjectsCtrl.deleteFile);
+
 steplevels.route('/projects/file/:name')
-  .get(authorize, ProjectsCtrl.downloadProject);
+  .get(authorize, ProjectsCtrl.downloadFile)
 
 steplevels.route('/projects/:id')
   .delete(authorize, ProjectsCtrl.deleteProject)
@@ -101,6 +104,7 @@ router.post('/api/steplevels/projects/', [multer.single('file')], function (req,
                   nombre: encoded,
                   preview: '',
                   fechaSubida: new Date(),
+                  size: req.file.size
                 }
               ]
           });
@@ -117,7 +121,47 @@ router.post('/api/steplevels/projects/', [multer.single('file')], function (req,
           });
       })
       .catch(next)
-  })
+});
+
+router.post('/api/steplevels/projects/file', [multer.single('file')], function (req, res, next) {
+    console.log('subimos: ', req.file);
+    return storeWithOriginalName(req.file)
+      .then(encodeURIComponent)
+      .then(encoded => {
+        const pr = JSON.parse(req.body.datos);
+        const myQuery = { _id : pr._id };
+        const files = pr.archivos;
+        const file =  {
+          nombre: encoded,
+          preview: '',
+          fechaSubida: new Date(),
+          size: req.file.size
+        }
+        files.push(file);
+        const test = {
+          archivos: files
+        }
+        console.log(files);
+
+        Project.updateOne(myQuery,test, (err, results) => {
+          console.log(err);
+          console.log(results);
+          if (err) {
+            res.status(500).json({
+              code: error.code
+            });
+          } else if (results) {
+            res.status(201).json({
+              message: "Archivo añadido!",
+              result: test
+            });
+          }
+
+        });      
+
+      })
+      .catch(next)
+});
   
 function storeWithOriginalName (file) {
   var fullNewPath = path.join(file.destination, file.originalname);
